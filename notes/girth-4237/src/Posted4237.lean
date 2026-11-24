@@ -1,0 +1,5 @@
+import Equivalence
+
+theorem GirthAnchor.posted_iff : (∃ (x1 : ℕ) (x2 : ℕ), ∀ (x3 : ℕ) (x4 : SimpleGraph (Fin x3)) [x5 : DecidableRel x4.Adj], (∀ (x6 : Fin x3), x4.degree x6 = (0 : ℕ) ∨ (3 : ℕ) ≤ x4.degree x6) → (∀ (x7 : Fin x3) (x8 : x4.Walk x7 x7), x8.IsCycle → (5 : ℕ) ≤ x8.length) → ∀ (x8 : PEqualNP.CircuitLowerBounds.Circuit), PEqualNP.MetaComplexity.Monotone2 x8 → PEqualNP.MetaComplexity.circuitFun x3 x8 = PEqualNP.MetaComplexity.NestedCover.graphFun x4 ∅ → ∀ x11 ⊆ {x12 ∈ x4.edgeFinset | ¬∃ (x13 : Fin x3) (x14 : Fin x3), x12 = s(x13, x14) ∧ ∃ (x15 : Fin x8.gates.length), PEqualNP.EdgeOwnership.Owns x3 x8 (↑x15) x13 x14 ∧ ∀ (x16 x17 : Fin x3), PEqualNP.EdgeOwnership.gateVal x3 x8 (↑x15) (PEqualNP.EdgeOwnership.pairInput x16 x17) = Bool.true → x4.Adj x16 x17}, (∀ (x13 : Fin x3), {x14 ∈ x11 | x13 ∈ x14}.card = (0 : ℕ) ∨ x1 < {x14 ∈ x11 | x13 ∈ x14}.card) → x11.card ≤ x2 * (x8.size + (1 : ℕ))) ↔ ∃ D K, GirthAnchor.PlainBound D K := GirthAnchor.exists_iff
+
+#print axioms GirthAnchor.posted_iff
