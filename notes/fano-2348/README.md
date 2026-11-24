@@ -1,0 +1,31 @@
+# The first OR gate in a Fano incidence circuit
+
+L-meta-2348 asks whether a circuit of at most 27 binary AND/OR gates can compute Fano point–line incidence while both directional traces vanish at the flag consisting of point 0 and line 0. Each gate must read two distinct earlier wires, and the first gate must be OR. The problem asks for a proof that such a circuit cannot exist. The 27-gate case remains open here. [Posted statement](src/Desk2348.lean)
+
+The reduction `R_meta_2348_825` restricts the search to 62-bit straight-line programs with at most two wires of each signature. `FanoSignature.closed` proves the first child in the exact form printed by the checker. The open second child asks for a proof that no normalized program of length at most 27 produces the target signature, which has bits 0 through 20 set. [First child](src/ClosedSignature.lean) · [Normalization](src/Multiplicity.lean) · [Target and gate rules](src/DeskNormal.lean)
+
+## Checked results
+
+- The first OR has 91 possible unordered raw pairs. The 16 symmetries preserving the marked flag as a set reduce these to 14 representatives. Six represent two inputs on the same side of the incidence graph, four represent incident point–line pairs, and four represent nonincident point–line pairs. The three classes contain 42, 21 and 28 raw pairs, respectively. [Canonical.lean](src/Canonical.lean) · [FullStabilizer.lean](src/FullStabilizer.lean) · [PairKinds.lean](src/PairKinds.lean)
+- Suppose the initial OR reads raw inputs `a` and `b`. Correctness alone, for a normalized circuit with this first gate, forces two distinct later gates. One reads `a` without reading `b`, and the other reads `b` without reading `a`. Each raw input also has a path to the output bypassing gate zero. [FirstOrBypass.lean](src/FirstOrBypass.lean)
+- At the marked flag, the two vanishing traces are equivalent to membership in the upstream `ReadK.doubleReread` set. Each accepting proof tree for that flag must contain at least two occurrences of each endpoint, so its AND depth is at least two. If the first OR reads exactly the marked endpoints, cutting the tree at each use of this gate still leaves at least two raw leaves of each kind. A cut tree that uses this gate has AND depth at least three. [ReadKBridge.lean](src/ReadKBridge.lean) · [DeskCertificates.lean](src/DeskCertificates.lean) · [FirstPairGate.lean](src/FirstPairGate.lean)
+- For **each of the 42 same-side pairs**, a 28-gate circuit starts with that pair's OR, computes the incidence function on all inputs and has both vanishing traces at the marked flag. The construction applies explicit input permutations to the 28-gate circuit from the L-meta-1479 companion. [SameShore28.lean](src/SameShore28.lean) · [Permutation rows](src/SameShoreData.lean)
+- In KainanP's 62-bit encoding, every successful straight-line program can be shortened or kept at its original length while preserving the first OR and using at most two wires of any signature, counting raw inputs. In a shortest tail after that OR, creating a second copy forces a later AND that reads both copies and produces a different signature. This AND clears at least one of the two directional bits. The normalization theorem records the resulting signature for each duplicated value. [Multiplicity.lean](src/Multiplicity.lean) · [NativeNormal.lean](src/NativeNormal.lean) · [DeskNormal.lean](src/DeskNormal.lean) · [General distinct-operand lemma](src/SignatureNormal.lean)
+
+Two auxiliary circuit theorems preserve results from a local draft (`R_meta_2348_824`). `FanoSolved.closed_one` converts the traces to the project's double-reread predicate. `FanoSolved.closed_two` gives a representative first pair and a private later reader for each operand. [ClosedChildren.lean](src/ClosedChildren.lean)
+
+## Reproduction
+
+Use Python 3.9 or newer, Git, Lean 4.36.0, and a built upstream `lean` directory at revision `2e67c7c8499e2e12d39c1f31c085c0e4e94b0391`. The mathlib revision is `fc4f59e577feb1a4956671bc04ac18aaaf8cd842`. From this directory run
+
+```sh
+python build.py --upstream /path/to/pequalnp-proofs/lean --build-dir /path/to/fano-2348-build
+```
+
+The script checks the revisions, compiles the local sources into the chosen build directory, imports the entry points together and prints their axiom dependencies. It accepts only Lean's standard `propext`, `Classical.choice` and `Quot.sound`. The default Lean binary comes from the elan installation. Supply `--lean /path/to/lean` for a separate Lean installation. For a single theorem, add an option such as `--target SameShore28:Near28.same_shore_28`. [Build script and entry points](build.py)
+
+## Prior work and reused proofs
+
+Arguiot's earlier PR gives the 91-to-14 symmetry reduction and a directional trace bridge. KainanP's PR supplies the 62-bit encoding to which the multiplicity and compulsory-AND lemmas apply. An earlier reduction also studies nonlinear AND witnesses. [Arguiot, PR #4706](https://github.com/open-goat/pequalnp-proofs/pull/4706) · [KainanP, PR #7600](https://github.com/open-goat/pequalnp-proofs/pull/7600) · [PR #7560](https://github.com/open-goat/pequalnp-proofs/pull/7560)
+
+The L-meta-1479 companion supplies the original 28-gate circuit, its 25-gate two-output subcircuit and the proof-tree certificate theory. `OwnershipBase.lean` carries the same upstream wire-evaluation and strict-cone lemmas used there. `LinearScanBase.lean` extracts the scan and linear-part lemmas used from L-meta-2462. Both extracts preserve the upstream declaration names. [L-meta-1479 companion](https://github.com/reminute/pequalnp-proofs/tree/1ccb3b183dd20e7540a6ccdfcd4eef84e288c992/notes/fano-1479) · [Upstream L-meta-1490](https://github.com/open-goat/pequalnp-proofs/blob/2e67c7c8499e2e12d39c1f31c085c0e4e94b0391/lean/PEqualNP/Outside/L_meta_1490.lean) · [Upstream L-meta-2462](https://github.com/open-goat/pequalnp-proofs/blob/2e67c7c8499e2e12d39c1f31c085c0e4e94b0391/lean/PEqualNP/Outside/L_meta_2462.lean)
