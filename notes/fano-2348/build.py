@@ -33,6 +33,9 @@ DEFAULT_TARGETS = (
     "DeskNormal:FanoDeskNormal.necessary_AND",
     "Multiplicity:FanoDeskNormal.normalize_multiplicity",
     "SameShore28:Near28.same_shore_28",
+    "Mixed29:FanoMixed29.checked",
+    "Mixed29:FanoMixed29.first_essential",
+    "FirstAndPartner:FirstAndPartner.partner_constraint",
     "ClosedChildren:FanoSolved.closed_one",
     "ClosedChildren:FanoSolved.closed_two",
 )
